@@ -1,0 +1,42 @@
+﻿@page
+@model TasksWeb.Pages.UserTasks.DetailsModel
+@{
+    ViewData["Title"] = "Task Details";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">Task Details</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Title</dt>
+                        <dd class="col-sm-9">@Model.Task.Title</dd>
+
+                        <dt class="col-sm-3">Description</dt>
+                        <dd class="col-sm-9">@Model.Task.Description</dd>
+
+                        <dt class="col-sm-3">Status</dt>
+                        <dd class="col-sm-9">@Model.Task.Status</dd>
+
+                        <dt class="col-sm-3">Assigned User</dt>
+                        <dd class="col-sm-9">@Model.Task.AssignedUser?.UserName</dd>
+
+                        <dt class="col-sm-3">Creation Date</dt>
+                        <dd class="col-sm-9">@Model.Task.CreationDate.ToString("yyyy-MM-dd")</dd>
+
+                        <dt class="col-sm-3">Update Date</dt>
+                        <dd class="col-sm-9">@Model.Task.UpdateDate.ToString("yyyy-MM-dd")</dd>
+                    </dl>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-page="./Edit" asp-route-id="@Model.Task.Id" class="btn btn-primary">Edit</a>
+                    <a asp-page="./Index" class="btn btn-outline-secondary ml-2">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

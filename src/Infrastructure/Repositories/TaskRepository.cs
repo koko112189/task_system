@@ -24,7 +24,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<UserTask>> GetAllAsync()
         {
-            var query =  _context.Tasks.AsNoTracking().AsQueryable();
+            var query =  _context.Tasks.AsNoTracking().Include(x => x.AssignedUser).AsQueryable();
 
             var tasks = await query.ToListAsync();
             return tasks;

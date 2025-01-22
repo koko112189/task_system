@@ -1,0 +1,61 @@
+﻿@page
+@model TasksWeb.Pages.UserTasks.EditModel
+@{
+    ViewData["Title"] = "Edit Task";
+}
+
+<h2 class="text-center mb-4">Edit Task</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form method="post" class="card p-4 shadow-sm">
+                <input type="hidden" asp-for="Task.Id" />
+
+                <div class="form-group mb-3">
+                    <label asp-for="Task.Title" class="form-label">Title</label>
+                    <input asp-for="Task.Title" class="form-control" placeholder="Enter task title" />
+                    <span asp-validation-for="Task.Title" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Task.Description" class="form-label">Description</label>
+                    <textarea asp-for="Task.Description" class="form-control" rows="3" placeholder="Enter task description"></textarea>
+                    <span asp-validation-for="Task.Description" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label asp-for="Task.Status" class="form-label">Status</label>
+                    <select asp-for="Task.Status" class="form-select">
+                        <option value="">-- Select a Status --</option>
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <span asp-validation-for="Task.Status" class="text-danger"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="Task.AssignedUserId" class="form-label">Assigned User</label>
+                    <select asp-for="Task.AssignedUserId" class="form-control">
+                        <option value="">-- Select a User --</option>
+                        @foreach (var user in Model.Users)
+                        {
+                            <option value="@user.Id">@user.UserName</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Task.AssignedUserId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Save" class="btn btn-primary btn-lg" />
+                    <a asp-page="./Index" class="btn btn-outline-secondary btn-lg ml-2">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

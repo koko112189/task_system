@@ -12,20 +12,43 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
 using System.Text.Json.Serialization;
+using TasksWeb.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 
 
-// Configurar EF Core con SQL Server
+// Configurar si se desea SQL Server
 builder.Services.AddDbContext<TasksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
     b => b.MigrationsAssembly("TasksWeb")));
 
 
+//Configurar si se desea usar postgres
+//builder.Services.AddDbContext<TasksDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"),
+//    b => b.MigrationsAssembly("TasksWeb")));
+
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 var key = Encoding.ASCII.GetBytes(jwtSettings["SecretKey"]);
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddTransient<JwtTokenHandler>();
+builder.Services.AddHttpClient("TasksApi", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:44365"); // Cambia la URL base según tu entorno
+    client.DefaultRequestHeaders.Accept.Clear();
+    client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+}).AddHttpMessageHandler<JwtTokenHandler>();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tiempo de expiración de la sesión
+    options.Cookie.HttpOnly = true; // La cookie solo es accesible desde el servidor
+    options.Cookie.IsEssential = true; // Marca la cookie como esencial
+});
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<TasksDbContext>()
@@ -57,6 +80,8 @@ builder.Services.AddScoped<ICsvProcessingService, CsvProcessingService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITasksRepository, TaskRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -141,15 +166,17 @@ else
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/" && !context.User.Identity.IsAuthenticated)
+    if (context.Request.Path == "/")
     {
-        context.Response.Redirect("/Account/Login"); // Redirige a la página de inicio de sesión
+        context.Response.Redirect("/Index"); // Redirige a la página de inicio de sesión
         return;
     }
     await next();
 });
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseSession();
 
 app.UseRouting();
 

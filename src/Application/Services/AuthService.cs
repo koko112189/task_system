@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Entities;
 using Azure.Core;
+using Infrastructure.Persistence;
 
 namespace Application.Services
 {
@@ -19,12 +20,14 @@ namespace Application.Services
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IUserRepository _userRepository;
 
-        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration)
+        public AuthService(UserManager<User> userManager, SignInManager<User> signInManager, IConfiguration configuration, IUserRepository userRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _userRepository = userRepository;
         }
 
         public async Task<string> AuthenticateAsync(string username, string password)
@@ -60,6 +63,18 @@ namespace Application.Services
                 errores += $"{error.Description }\n";
             }
             return errores;
+        }
+
+        public async Task<IEnumerable<User>> GetAsync()
+        {
+            try
+            {
+                return await _userRepository.GetAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         private string GenerateJwtToken(User user)

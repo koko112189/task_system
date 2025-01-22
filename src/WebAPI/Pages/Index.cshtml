@@ -1,9 +1,28 @@
 ﻿@page
 @model TasksWeb.Pages.IndexModel
 @{
-	ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Home Page";
 }
 
-<h2>Welcome</h2>
-
-<p>Please <a href="/Account/Login">login</a> or <a href="/Account/Register">register</a> to continue.</p>
+<div class="container text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm mt-5">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="card-title mb-0">Welcome to Task Manager</h1>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Manage your tasks efficiently and stay organized.</p>
+                    <p>Please log in or register to get started.</p>
+                    <div class="d-grid gap-3 d-md-block">
+                        <a href="/Account/Login" class="btn btn-primary btn-lg">Login</a>
+                        <a href="/Account/Register" class="btn btn-success btn-lg">Register</a>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <small>Task Manager &copy; @DateTime.Now.Year</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetById(Guid id)
         {
             var task = await _taskServiceService.GetTaskByIdAsync(id);
-            return task == null ? NotFound() : Ok(_mapper.Map<TaskDto>(task));
+            return task == null ? NotFound() : Ok(task);
         }
 
         [HttpGet]
@@ -124,9 +124,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> updateStatus(UserTask task)
+        public async Task<IActionResult> updateStatus(UpdateTaskDto task)
         {
-            await _taskServiceService.UpdateTaskAsync(task);
+            var _task = _mapper.Map<UserTask>(task);
+            await _taskServiceService.UpdateTaskAsync(_task);
             return NoContent();
         }
     }

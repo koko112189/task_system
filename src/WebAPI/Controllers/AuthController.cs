@@ -42,6 +42,13 @@ namespace ApplicantsAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _authService.GetAsync();
+            return Ok(users);
+        }
     }
 
     public class LoginRequest

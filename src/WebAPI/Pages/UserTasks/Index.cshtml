@@ -1,0 +1,100 @@
+﻿@page
+@model TasksWeb.Pages.UserTasks.IndexModel
+@{
+    ViewData["Title"] = "Tasks";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">Tasks</h2>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <a asp-page="Create" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Create New
+                        </a>
+                        <div class="form-group w-25">
+                            <label for="statusFilter" class="form-label">Filter by Status:</label>
+                            <select class="form-control" id="statusFilter">
+                                <option value="">-- All Statuses --</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="tasksTable">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Description</th>
+                                    <th>Status</th>
+                                    <th>Assigned User</th>
+                                    <th>Creation Date</th>
+                                    <th>Update Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var task in Model.Tasks)
+                                {
+                                    <tr>
+                                        <td>@task.Title</td>
+                                        <td>@task.Description</td>
+                                        <td class="task-status">
+                                            <span class="badge
+                                                @(task.Status == "Pending" ? "bg-warning" :
+                                                  task.Status == "In Progress" ? "bg-info" :
+                                                  task.Status == "Completed" ? "bg-success" : "bg-secondary")">
+                                                @task.Status
+                                            </span>
+                                        </td>
+                                        <td>@task.AssignedUser?.UserName</td>
+                                        <td>@task.CreationDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@task.UpdateDate.ToString("yyyy-MM-dd")</td>
+                                        <td>
+                                            <a asp-page="./Edit" asp-route-id="@task.Id" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                            <a asp-page="./Details" asp-route-id="@task.Id" class="btn btn-sm btn-outline-info">
+                                                <i class="fas fa-info-circle"></i> Details
+                                            </a>
+                                            <a asp-page="./Delete" asp-route-id="@task.Id" class="btn btn-sm btn-outline-danger">
+                                                <i class="fas fa-trash"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('statusFilter').addEventListener('change', function () {
+            const filterValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#tasksTable tbody tr');
+
+            rows.forEach(row => {
+                const statusCell = row.querySelector('.task-status');
+                const statusText = statusCell.textContent.toLowerCase();
+
+                if (statusText.includes(filterValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+}

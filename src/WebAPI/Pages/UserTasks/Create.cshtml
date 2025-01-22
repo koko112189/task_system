@@ -1,0 +1,67 @@
+﻿@page
+@model TasksWeb.Pages.UserTasks.CreateModel
+@{
+    ViewData["Title"] = "Create Task";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0">Create Task</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Task.Title" class="form-label">Title</label>
+                            <input asp-for="Task.Title" class="form-control" placeholder="Enter task title" />
+                            <span asp-validation-for="Task.Title" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Task.Description" class="form-label">Description</label>
+                            <input asp-for="Task.Description" class="form-control" placeholder="Enter task description" />
+                            <span asp-validation-for="Task.Description" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Task.Status" class="form-label">Status</label>
+                            <select asp-for="Task.Status" class="form-select">
+                                <option value="">-- Select a Status --</option>
+                                <option value="Pending">Pending</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                            <span asp-validation-for="Task.Status" class="text-danger small"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Task.AssignedUserId" class="form-label">Assigned User</label>
+                            <select asp-for="Task.AssignedUserId" class="form-control select2-users">
+                                <option value="">-- Select a User --</option>
+                                @foreach (var user in Model.Users)
+                                {
+                                    <option value="@user.Id">@user.UserName</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Task.AssignedUserId" class="text-danger small"></span>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Create Task</button>
+                            <a asp-page="Index" class="btn btn-outline-secondary">Back to List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.select2-users').select2({
+                placeholder: "Select a user",
+                allowClear: true
+            });
+        });
+    </script>
+}

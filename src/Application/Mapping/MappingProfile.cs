@@ -14,7 +14,9 @@ namespace Application.Mapping
         public MappingProfile()
         {
             CreateMap <UserTask, TaskDto>();
+            CreateMap <UserTask, UpdateTaskDto>();
             CreateMap<TaskDto, UserTask>();
+            CreateMap<UpdateTaskDto, UserTask>();
         }
     }
 }
