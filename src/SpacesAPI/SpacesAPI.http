@@ -1,0 +1,6 @@
+@SpacesAPI_HostAddress = http://localhost:5277
+
+GET {{SpacesAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
