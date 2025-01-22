@@ -1,60 +1,155 @@
-# Space Management Service
+Task Management System
+Este proyecto es un sistema de gestión de tareas desarrollado con una arquitectura hexagonal (también conocida como "puertos y adaptadores"), utilizando el patrón Unit of Work para la gestión de transacciones. El backend está construido con ASP.NET Core y puede conectarse a SQL Server o PostgreSQL.
 
-Este proyecto es un servicio de gestión de espacios que permite crear, actualizar, eliminar y consultar espacios y reservas. Está construido con ASP.NET Core y utiliza Entity Framework Core para la persistencia de datos.
+Requisitos Previos
+Antes de desplegar el proyecto, asegúrate de tener instalado lo siguiente:
 
-## Características
+.NET SDK 6.0 o superior: Descargar .NET SDK
 
-- Crear, actualizar, eliminar y consultar espacios.
-- Crear, actualizar, eliminar y consultar reservas.
-- Validación de solapamiento de reservas.
-- Configuración de CORS para permitir solicitudes desde otros dominios.
-- Documentación de API con Swagger.
+SQL Server o PostgreSQL: Dependiendo de la base de datos que desees utilizar.
 
-## Requisitos
+Para SQL Server: Descargar SQL Server
 
-- .NET 9
-- SQL Server (o cualquier base de datos compatible con Entity Framework Core)
-- Visual Studio 2022 (o cualquier IDE compatible con .NET)
+Para PostgreSQL: Descargar PostgreSQL
 
-## Configuración del Proyecto
+Entity Framework Core CLI: Para ejecutar migraciones.
 
-1. Clona el repositorio:
+Instalar con: dotnet tool install --global dotnet-ef
 
-git clone https://github.com/koko112189/RentHub_Backend_msReservations.git
-cd RentHub_Backend
+Docker (opcional): Si deseas desplegar el proyecto en contenedores.
 
-2. Configura la cadena de conexión a la base de datos en `appsettings.json`:
-3. Restaura los paquetes NuGet:
-   dotnet restore
-4. Aplica las migraciones de la base de datos:
-   dotnet ef database update
+Configuración del Proyecto
+1. Configuración de la Base de Datos
+El proyecto puede conectarse a SQL Server o PostgreSQL. Asegúrate de configurar la cadena de conexión en el archivo appsettings..
 
-## Ejecución del Proyecto
+SQL Server
 
-1. Ejecuta el proyecto:
-   dotnet run --project src/WebAPI
-   dotnet run --project src/SpacesAPI
 
-2. Abre tu navegador y navega a `https://localhost:44365/swagger` para ver la documentación de la API de reservas.
-3. Abre tu navegador y navega a `https://localhost:44354/swagger` para ver la documentación de la API de espacios.
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Database=TaskSystemDB;User Id=sa;Password=test1234;Trust Server Certificate=true;"
+}
+PostgreSQL
 
-Arquitectura Utilizada
-La solución sigue una arquitectura Clean Code, que separa las responsabilidades en diferentes capas para mejorar la mantenibilidad, escalabilidad y testabilidad del sistema.
 
-## Estructura del Proyecto
+"ConnectionStrings": {
+  "PostgresConnection": "Host=localhost;Database=TaskSystemDB;Username=postgres;Password=your_password"
+}
+2. Configuración del Proyecto
+Clona el repositorio:
 
-- `src/Application`: Contiene la lógica de negocio y los servicios.
-- `src/Domain`: Contiene las entidades y excepciones del dominio.
-- `src/Infrastructure`: Contiene la implementación de la persistencia y los repositorios.
-- `src/WebAPI`: Contiene los controladores y la configuración de la API para gestionar reservas.
-- `src/SpacesAPI`: Contiene los controladores y la configuración de la API para gestionar espacios.
-- `tests`: Contiene las pruebas unitarias y de integración.
+bash
 
-## Cómo Ejecutar las Pruebas
-•	Las pruebas unitarias se encuentran en el proyecto tests.
-•	Utilizan xUnit como framework de pruebas y Moq para crear simulaciones de dependencias.
-•	Para ejecutar las pruebas unitarias, puedes usar el siguiente comando en la terminal:
+git clone https://github.com/koko112189/task_system.git
+cd task-system
+Configura la base de datos:
 
- dotnet test
+Abre el archivo appsettings. y modifica las cadenas de conexión según tu entorno.
 
-   
+Instala las dependencias:
+
+bash
+
+dotnet restore
+Aplica las migraciones:
+
+Para SQL Server:
+
+bash
+
+dotnet ef database update --context TasksDbContext
+Para PostgreSQL:
+
+bash
+
+dotnet ef database update --context TasksDbContext
+3. Ejecución del Proyecto
+Ejecuta el proyecto:
+
+bash
+
+dotnet run
+Accede a la aplicación:
+
+Abre tu navegador y visita https://localhost:5001 (o http://localhost:5000 si no usas HTTPS).
+
+Swagger UI:
+
+Para explorar la API, visita https://localhost:5001/swagger.
+
+Despliegue en Docker (Opcional)
+Si deseas desplegar el proyecto en Docker, sigue estos pasos:
+
+Crea un archivo Dockerfile:
+
+dockerfile
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+ . .
+RUN dotnet restore
+RUN dotnet build -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+ --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "TasksWeb.dll"]
+Crea un archivo docker-compose.yml:
+
+yaml
+
+version: '3.8'
+services:
+  web:
+    image: task-management-system
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Database=TaskSystemDB;User Id=sa;Password=test1234;Trust Server Certificate=true;
+    depends_on:
+      - db
+
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "test1234"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+Construye y ejecuta los contenedores:
+
+bash
+
+docker-compose up --build
+Accede a la aplicación:
+
+Abre tu navegador y visita http://localhost:5000.
+
+Estructura del Proyecto
+El proyecto sigue una arquitectura hexagonal con las siguientes capas:
+
+Application: Contiene la lógica de negocio, DTOs, servicios y mapeos.
+
+Domain: Contiene las entidades y interfaces de repositorio.
+
+Infrastructure: Implementa los repositorios, el contexto de la base de datos y la configuración de Entity Framework.
+
+WebAPI: Contiene los controladores, middleware y configuración de la API.
+
+Pruebas Unitarias
+El proyecto incluye pruebas unitarias para los controladores y servicios. Para ejecutar las pruebas:
+
+bash
+
+dotnet test
