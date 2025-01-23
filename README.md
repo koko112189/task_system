@@ -1,78 +1,99 @@
-Task Management System
+##Task Management System
+
 Este proyecto es un sistema de gestión de tareas desarrollado con una arquitectura hexagonal (también conocida como "puertos y adaptadores"), utilizando el patrón Unit of Work para la gestión de transacciones. El backend está construido con ASP.NET Core y puede conectarse a SQL Server o PostgreSQL.
+
 
 Requisitos Previos
 Antes de desplegar el proyecto, asegúrate de tener instalado lo siguiente:
 
-.NET SDK 6.0 o superior: Descargar .NET SDK
 
-SQL Server o PostgreSQL: Dependiendo de la base de datos que desees utilizar.
+- .NET SDK 6.0 o superior: Descargar .NET SDK
 
-Para SQL Server: Descargar SQL Server
+- SQL Server o PostgreSQL: Dependiendo de la base de datos que desees utilizar.
 
-Para PostgreSQL: Descargar PostgreSQL
+- Para SQL Server: Descargar SQL Server
 
-Entity Framework Core CLI: Para ejecutar migraciones.
+- Para PostgreSQL: Descargar PostgreSQL
 
-Instalar con: dotnet tool install --global dotnet-ef
+- Entity Framework Core CLI: Para ejecutar migraciones.
 
-Docker (opcional): Si deseas desplegar el proyecto en contenedores.
+- Instalar con: dotnet tool install --global dotnet-ef
 
-Configuración del Proyecto
+- Docker (opcional): Si deseas desplegar el proyecto en contenedores.
+
+# Configuración del Proyecto
 1. Configuración de la Base de Datos
-El proyecto puede conectarse a SQL Server o PostgreSQL. Asegúrate de configurar la cadena de conexión en el archivo appsettings..
+2. 
+El proyecto puede conectarse a SQL Server o PostgreSQL. Asegúrate de configurar la cadena de conexión en el archivo appsettings.json
 
 SQL Server
+
 
 
 "ConnectionStrings": {
   "DefaultConnection": "Server=localhost;Database=TaskSystemDB;User Id=sa;Password=test1234;Trust Server Certificate=true;"
 }
+
 PostgreSQL
+
 
 
 "ConnectionStrings": {
   "PostgresConnection": "Host=localhost;Database=TaskSystemDB;Username=postgres;Password=your_password"
 }
+
 2. Configuración del Proyecto
+3. 
 Clona el repositorio:
 
 bash
 
 git clone https://github.com/koko112189/task_system.git
+
 cd task-system
+
 Configura la base de datos:
 
-Abre el archivo appsettings. y modifica las cadenas de conexión según tu entorno.
+Abre el archivo appsettings.json y modifica las cadenas de conexión según tu entorno.
+
 
 Instala las dependencias:
 
+
 bash
 
-dotnet restore
-Aplica las migraciones:
 
-Para SQL Server:
+dotnet restore
+
+##Aplica las migraciones:
+
+
+- Para SQL Server:
 
 bash
 
 dotnet ef database update --context TasksDbContext
+
+
 Para PostgreSQL:
 
 bash
 
 dotnet ef database update --context TasksDbContext
+
 3. Ejecución del Proyecto
 Ejecuta el proyecto:
 
 bash
 
 dotnet run
+
 Accede a la aplicación:
 
 Abre tu navegador y visita https://localhost:5001 (o http://localhost:5000 si no usas HTTPS).
 
 Swagger UI:
+
 
 Para explorar la API, visita https://localhost:5001/swagger.
 
