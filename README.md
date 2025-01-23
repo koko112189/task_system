@@ -157,7 +157,8 @@ Accede a la aplicación:
 
 Abre tu navegador y visita http://localhost:5000.
 
-Estructura del Proyecto
+## **Estructura del Proyecto**
+
 El proyecto sigue una arquitectura hexagonal con las siguientes capas:
 
 Application: Contiene la lógica de negocio, DTOs, servicios y mapeos.
